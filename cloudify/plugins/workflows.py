@@ -33,7 +33,8 @@ def uninstall(ctx, **kwargs):
 
     lifecycle.uninstall_node_instances(
         graph=ctx.graph_mode(),
-        node_instances=set(ctx.node_instances))
+        node_instances=set(ctx.node_instances),
+        ignore_failure=kwargs.get('ignore_failure', False))
 
 
 @workflow
@@ -65,7 +66,8 @@ def auto_heal_reinstall_node_subgraph(
     lifecycle.reinstall_node_instances(
         graph=graph,
         node_instances=subgraph_node_instances,
-        related_nodes=intact_nodes)
+        related_nodes=intact_nodes,
+        ignore_failure=kwargs.get('ignore_failure', True))
 
 
 @workflow
@@ -174,6 +176,7 @@ def scale_entity(ctx,
                 lifecycle.uninstall_node_instances(
                     graph=graph,
                     node_instances=added,
+                    ignore_failure=kwargs.get('ignore_failure', False),
                     related_nodes=related)
                 raise
         else:
@@ -184,6 +187,7 @@ def scale_entity(ctx,
             lifecycle.uninstall_node_instances(
                 graph=graph,
                 node_instances=removed,
+                ignore_failure=kwargs.get('ignore_failure', False),
                 related_nodes=related)
     except:
         ctx.logger.warn('Rolling back deployment modification. '
@@ -458,6 +462,7 @@ def update(ctx,
         lifecycle.uninstall_node_instances(
             graph=graph,
             node_instances=set(instances_by_change['removed_instances'][1]),
+            ignore_failure=False,
             related_nodes=set(
                     instances_by_change['remove_target_instance_ids'][1])
         )
