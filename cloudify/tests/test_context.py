@@ -200,8 +200,13 @@ class NodeContextTests(testtools.TestCase):
 
 
 class ResourcesToCopyTests(testtools.TestCase):
-    @workflow_test(blueprint_path='resources/blueprints/test-resources-to-copy.yaml',
-                   resources_to_copy=[('resources/test-resources-to-copy.txt', 'resources')])
+    test_blueprint_path = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        "resources/blueprints/test-resources-to-copy.yaml")
+
+    @workflow_test(blueprint_path=test_blueprint_path,
+                   resources_to_copy=[('resources/test-resources-to-copy.txt',
+                                       'resources')])
     def test_resources_to_copy(self, cfy_local):
         cfy_local.execute('install')
 
